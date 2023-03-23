@@ -36,13 +36,13 @@ server.post('/Music', postOnDataBaseMusicHandler);
 //////////////////// Delete From Data Base Music Rout
 server.delete('/Music/:id', deleteFromDataBaseMusicHandler);
 ////////////////////////////////////////////////////////gift routes//////////////////////////////////////////////////
-////////////////get from API//////////////
+////////////////get from API gift//////////////
 server.get("/gifts", giftsAPIHandler);
-/////////////////post to DataBase//////////
+/////////////////post to DataBase gift//////////
 server.post("/gift", postGiftHandler);
-///////////////get from DataBase////////////
+///////////////get from DataBase gift////////////
 server.get("/gift", getGiftsFromDBHandler);
-///////////////delete from DataBase////////////
+///////////////delete from DataBase gift////////////
 server.delete("/gift/:id", deleteFromDbHandler);
 
 server.use(errorHandler); // under all routs
@@ -148,7 +148,7 @@ function deleteFromDataBaseMusicHandler(req, res) {
         })
 } 
 /////////////////////////////////////////////////////////gift Handlers///////////////////////////////////////////////
-//////////get from API Handler////////////
+//////////get from API Handler gift////////////
 function giftsAPIHandler(req, res) {
     const ServerUrl = `${process.env.ServerUrl}`;
     axios
@@ -171,7 +171,7 @@ function giftsAPIHandler(req, res) {
         errorHandler(err, req, res);
       });
   }
-  /////////post to DataBasr Handler////////////////////
+  /////////post to DataBasr Handler gift////////////////////
   function postGiftHandler(req, res) {
     const body = req.body;
     const sql = `INSERT INTO gifts (gift_title, gift_image, gift_price,user_email)
@@ -200,7 +200,7 @@ function giftsAPIHandler(req, res) {
         errorHandler(err, req, res);
       });
   }
-  ////////get from DataBase///////////////////////
+  ////////get from DataBase gift///////////////////////
   function getGiftsFromDBHandler(req, res) {
     const user_email = req.query.user_email;
     const sql = `SELECT * FROM gifts WHERE user_email=$1`;
@@ -214,7 +214,7 @@ function giftsAPIHandler(req, res) {
         errorHandler(err, req, res);
       });
   }
-  ////// delete from DataBase/////////////////////
+  ////// delete from DataBase gift/////////////////////
   function deleteFromDbHandler(req, res) {
       const id= req.params.id;
     const user_email = req.query.user_email;
