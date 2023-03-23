@@ -35,7 +35,15 @@ server.get('/Music', getMusicFromDataBaseHandler);
 server.post('/Music', postOnDataBaseMusicHandler);
 //////////////////// Delete From Data Base Music Rout
 server.delete('/Music/:id', deleteFromDataBaseMusicHandler);
-
+////////////////////////////////////////////////////////gift routes//////////////////////////////////////////////////
+////////////////get from API gift//////////////
+server.get("/gifts", giftsAPIHandler);
+/////////////////post to DataBase gift//////////
+server.post("/gift", postGiftHandler);
+///////////////get from DataBase gift////////////
+server.get("/gift", getGiftsFromDBHandler);
+///////////////delete from DataBase gift////////////
+server.delete("/gift/:id", deleteFromDbHandler);
 
 server.use(errorHandler); // under all routs
 ///////////////////////////////////////////////////////// Music constructor /////////////////////////////////////////////////////////////////////
@@ -45,7 +53,12 @@ function Music(track_name, track_url, aritst_name) {
         this.track_url = track_url,
         this.aritst_name = aritst_name
 }
-
+/////////////////////////////////////////////////////////gift constructor////////////////////////////////////////////
+function Gifts(gift_title, gift_image, gift_price) {
+    this.gift_title = gift_title;
+    this.gift_image = gift_image;
+    this.gift_price = gift_price;
+  }
 
 
 
@@ -134,6 +147,95 @@ function deleteFromDataBaseMusicHandler(req, res) {
             errorHandler(err, req, res);
         })
 } 
+/////////////////////////////////////////////////////////gift Handlers///////////////////////////////////////////////
+//////////get from API Handler gift////////////
+function giftsAPIHandler(req, res) {
+    const ServerUrl = `${process.env.ServerUrl}`;
+    axios
+      .get(ServerUrl)
+      .then((response) => {
+        let filtered = response.data.search_results.filter((item) => {
+          if (item.price == undefined) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+        let resultForm = filtered.map((item) => {
+          let gift = new Gifts(item.title, item.image, item.price.raw);
+          return gift;
+        });
+        res.send(resultForm);
+      })
+      .catch((err) => {
+        errorHandler(err, req, res);
+      });
+  }
+  /////////post to DataBasr Handler gift////////////////////
+  function postGiftHandler(req, res) {
+    const body = req.body;
+    const sql = `INSERT INTO gifts (gift_title, gift_image, gift_price,user_email)
+                   VALUES ($1,$2,$3,$4) RETURNING *;`;
+    let values = [
+      body.gift_title,
+      body.gift_image,
+      body.gift_price,
+      body.user_email,
+    ];
+    client
+      .query(sql, values)
+      .then((data) => {
+        const user_email = req.body.user_email;
+        const sql = `SELECT * FROM gifts WHERE user_email=$1`;
+        client.query(sql, [user_email])
+          .then((response) => {
+            console.log(response);
+            res.send(response.rows);
+          })
+          .catch((err) => {
+            errorHandler(err, req, res);
+          });
+      })
+      .catch((err) => {
+        errorHandler(err, req, res);
+      });
+  }
+  ////////get from DataBase gift///////////////////////
+  function getGiftsFromDBHandler(req, res) {
+    const user_email = req.query.user_email;
+    const sql = `SELECT * FROM gifts WHERE user_email=$1`;
+    client
+      .query(sql, [user_email])
+      .then((response) => {
+        console.log(response);
+        res.send(response.rows);
+      })
+      .catch((err) => {
+        errorHandler(err, req, res);
+      });
+  }
+  ////// delete from DataBase gift/////////////////////
+  function deleteFromDbHandler(req, res) {
+      const id= req.params.id;
+    const user_email = req.query.user_email;
+    const sql = `DELETE FROM gifts WHERE id=$1`;
+    client
+      .query(sql, [id])
+      .then((respones) => {
+        const sql = `SELECT * FROM gifts WHERE user_email=$1`;
+        client.query(sql, [user_email])
+          .then((response) => {
+            console.log(response);
+            res.send(response.rows);
+          })
+          .catch((err) => {
+            errorHandler(err, req, res);
+          });
+      })
+      .catch((err) => {
+        errorHandler(err, req, res);
+      });
+  }
 /////////////////////////////////////////////////////////////// error Handler /////////////////////////////////////////////////////////////////
 function errorHandler(error, req, res) {
     const err = {
