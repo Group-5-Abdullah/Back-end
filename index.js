@@ -20,7 +20,7 @@ server.use(cors());
 server.use(express.json());
 
 const PORT = 3002;
-const DATABASE_URL = "postgres://nwdirbvq:CzOYZh18BS3hN9zRkIui1AgUegaiXhHy@manny.db.elephantsql.com/nwdirbvq"
+const DATABASE_URL = "postgresql://localhost:5432/demo"
 
 
 const client = new pg.Client(DATABASE_URL);
