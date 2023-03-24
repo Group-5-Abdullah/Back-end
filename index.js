@@ -5,7 +5,7 @@ const express = require('express');
 const cors = require('cors');
 
 const axios = require('axios');
-
+const jsonData = require ('./data.json');
 
 
 
@@ -45,6 +45,16 @@ server.get("/gift", getGiftsFromDBHandler);
 ///////////////delete from DataBase gift////////////
 server.delete("/gift/:id", deleteFromDbHandler);
 
+////////////////////////////////////////////////////////flowers routes//////////////////////////////////////////////////
+////////////////get from data.jason//////////////
+server.get("/flowerslist", flowersListHandler);
+/////////////////post to DataBase flowerstable//////////
+server.post("/flowerslist", postFlowersHandler);
+///////////////get from DataBase flowerstable////////////
+server.get("/flower", getFlowerDBHandler);
+///////////////delete from DataBase gift////////////
+server.delete("/flower/:id", deleteFlowerHandler);
+
 
 server.get('/events',getEvent)
 server.post('/events',addEvent)
@@ -65,6 +75,12 @@ function Gifts(gift_title, gift_image, gift_price) {
     this.gift_image = gift_image;
     this.gift_price = gift_price;
   }
+    /////////////////////////////////////////////////////////flowersList constructor////////////////////////////////////////////
+function Flowers(flower_title, flower_image) {
+  this.flower_title = flower_title;
+  this.flower_image = flower_image;
+  
+}
 
 
 
@@ -304,6 +320,73 @@ function getEvent(req,res){
   })
 
 }
+ /////////////////////////////////////////////////////////flowers Handlers///////////////////////////////////////////////
+//////////get from data.jason Handler flowers////////////
+function flowersListHandler(req, res) {
+  res.status(200).send(jsonData.flowerslist);     
+}
+
+//////////post to dataBase flowers table ////////////
+function postFlowersHandler(req, res) {
+  const flower = req.body;
+  // console.log(flower);
+  const sql = `INSERT INTO flowers(flower_title,flower_image,user_email) VALUES($1, $2, $3) RETURNING *;`;
+  const values = [flower.name, flower.photo, flower.user_email];
+
+  client.query(sql, values)
+  .then((data) => {
+    const user_email = req.body.user_email;
+    const sql = `SELECT * FROM flowers WHERE user_email=$1`;
+    client.query(sql, [user_email])
+      .then((response) => {
+        res.send(response.rows);
+      })
+      .catch((err) => {
+        errorHandler(err, req, res);
+      });
+  })
+  .catch((err) => {
+    errorHandler(err, req, res);
+  });
+}
+
+////////get from DataBase flowerstable///////////////////////
+function getFlowerDBHandler(req, res) {
+const user_email = req.query.user_email;
+const sql = `SELECT * FROM flowers WHERE user_email=$1`;
+client
+  .query(sql, [user_email])
+  .then((response) => {
+    res.send(response.rows);
+  })
+  .catch((err) => {
+    errorHandler(err, req, res);
+  });
+}
+
+////// delete from DataBase flowerstable/////////////////////
+function deleteFlowerHandler(req, res) {
+const id= req.params.id;
+  const user_email = req.query.user_email;
+  const sql = `DELETE FROM flowers WHERE id=$1`;
+  client
+    .query(sql, [id])
+    .then((respones) => {
+      const sql = `SELECT * FROM flowers WHERE user_email=$1`;
+      client.query(sql, [user_email])
+        .then((response) => {
+          console.log(response);
+          res.send(response.rows);
+        })
+        .catch((err) => {
+          errorHandler(err, req, res);
+        });
+    })
+    .catch((err) => {
+      errorHandler(err, req, res);
+    });
+}
+
 
 /////////////////////////////////////////////////////////////// error Handler /////////////////////////////////////////////////////////////////
 function errorHandler(error, req, res) {
