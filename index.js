@@ -91,8 +91,12 @@ function Flowers(flower_title, flower_image) {
   
 }
 
-
-
+/////////////////////////////////////////////////////////flowersList constructor////////////////////////////////////////////
+function Food(food_title, food_image) {
+  this.food_title = food_title;
+  this.food_image = food_image;
+ 
+}
 
 
 
