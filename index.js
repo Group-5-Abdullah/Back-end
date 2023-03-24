@@ -115,7 +115,7 @@ function Food(food_title, food_image) {
 /////////////////////////////////////////////////////////// Get Music From API Handler ////////////////////////////////////////////////////////////
 function getMusicFromAPIHandler(req, res) {
     try {
-        const musicURL = `http://ws.audioscrobbler.com/2.0/?method=tag.gettoptracks&tag=wedding&api_key=${MusicAPIKye}&format=json`
+        const musicURL = `http://ws.audioscrobbler.com/2.0/?method=tag.gettoptracks&tag=wedding&api_key=a413c7fc2ddf8bbbd7c3276e61a6e139&format=json`
 
         axios.get(musicURL)
             .then((musicURLAxiosResult) => {
