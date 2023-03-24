@@ -24,8 +24,9 @@ const PORT = process.env.PORT || 3002;
 
 let MusicAPIKye = process.env.musicAPIKye
 
-const client = new pg.Client(process.env.DATABASE_URL);
+const client = new pg.Client("postgres://nwdirbvq:CzOYZh18BS3hN9zRkIui1AgUegaiXhHy@manny.db.elephantsql.com/nwdirbvq");
 ///////////////////////////////////////////////////////// Routs /////////////////////////////////////////////////////////////////////////////////
+server.get('/',(req,res)=>{res.json("hi")})
 ///////////////////////////////////////////////////////// Music Routs ///////////////////////////////////////////////////////////////////////////
 //////////////////// Get from API Music Rout
 server.get('/MusicAPI', getMusicFromAPIHandler);
@@ -552,17 +553,17 @@ function deleteOnDataBaseReadyPackagesHandler(req, res) {
 
 
 /////////////////////////////////////////////////////////////// error Handler /////////////////////////////////////////////////////////////////
-function errorHandler(error, req, res) {
+function errorHandler(error, req, res, next) {
     const err = {
         status: 500,
         massage: error
     }
     res.status(500).send(err);
 } // under all handlers
-server.get('/',(req,res)=>{res.send("hi")})
-// client.connect()
-    // .then(() => {
+
+client.connect()
+    .then(() => {
         server.listen(PORT, () => {
             console.log(`Hi ${PORT}`)
         });
-    // })
+    })
