@@ -559,10 +559,10 @@ function errorHandler(error, req, res) {
     }
     res.status(500).send(err);
 } // under all handlers
-
-client.connect()
-    .then(() => {
+server.get('/',(req,res)=>{res.send("hi")})
+// client.connect()
+    // .then(() => {
         server.listen(PORT, () => {
             console.log(`Hi ${PORT}`)
         });
-    })
+    // })
