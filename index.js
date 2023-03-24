@@ -60,6 +60,15 @@ server.get('/events',getEvent)
 server.post('/events',addEvent)
 server.put('/events/:id',updateEvent)
 server.delete('/events/:id',deleteEvent)
+////////////////////////////////////////////////////////food routes//////////////////////////////////////////////////
+////////////////get from food api//////////////
+server.get('/FoodAPI',getFoodFromAPIHandler);
+///////////////get from table food////////////
+server.get('/food', getFoodFromDBHandler);
+/////////////////post to table food//////////
+server.post('/food', postFoodFromDBHandler);
+///////////////delete from table food////////////
+server.delete('/food',deleteFoodFromDBHandler)
 
 server.use(errorHandler); // under all routs
 ///////////////////////////////////////////////////////// Music constructor /////////////////////////////////////////////////////////////////////
@@ -82,8 +91,12 @@ function Flowers(flower_title, flower_image) {
   
 }
 
-
-
+/////////////////////////////////////////////////////////flowersList constructor////////////////////////////////////////////
+function Food(food_title, food_image) {
+  this.food_title = food_title;
+  this.food_image = food_image;
+ 
+}
 
 
 
@@ -386,6 +399,89 @@ const id= req.params.id;
       errorHandler(err, req, res);
     });
 }
+/////////////////////////////////////////////////////////// Get food From API ////////////////////////////////////////////////////////////
+
+function getFoodFromAPIHandler(req, res) {
+  const query = req.query.query; //get the query value 
+  const apiURL =
+    `https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.foodAPIKey}&query=${query}&number=12`;
+  axios
+    .get(apiURL)
+    .then((response) => {
+      const results = response.data.results;
+      const foodList = results.map(
+        (result) => new Food(result.title, result.image)
+      );
+      res.send(foodList);
+    })
+    .catch((error) => {
+      errorHandler(error, req, res);
+    });
+}
+
+//////////Get food From Data Base Handler////////
+
+function getFoodFromDBHandler(req, res) {
+const user_email = req.query.user_email;
+const sql = `SELECT * FROM food WHERE user_email=$1`;
+client
+  .query(sql, [user_email])
+  .then((response) => {
+    console.log(response);
+    res.send(response.rows);
+  })
+  .catch((err) => {
+    errorHandler(err, req, res);
+  });
+}
+
+/////////post to food table////////////////////
+
+function postFoodFromDBHandler (req, res) {
+  const body = req.body;
+  const sql = `INSERT INTO food (user_email, food_title, food_image) VALUES ($1, $2, $3) RETURNING *`;
+  const values = [body.user_email, body.food_title, body.food_image];
+
+  client.query(sql, values)
+    .then((result) => {
+      const sql = `SELECT * FROM food WHERE user_email = $1`;
+      const values = [body.user_email];
+
+      client.query(sql, values)
+        .then((result) => {
+          res.send(result.rows);
+        })
+        .catch((err) => {
+          errorHandler(err, req, res);
+        });
+    })
+    .catch((err) => {
+      errorHandler(err, req, res);
+    });
+}
+
+
+
+function deleteFoodFromDBHandler(req, res) {
+  const id = req.query.id;
+  const user_email = req.query.user_email;
+  const sql = `DELETE FROM food WHERE id=$1 AND user_email=$2`;
+  client.query(sql, [id, user_email])
+    .then(() => {
+      const sql = `SELECT * FROM food WHERE user_email=$1`;
+      client.query(sql, [user_email])
+        .then((response) => {
+          res.send(response.rows);
+        })
+        .catch((err) => {
+          errorHandler(err, req, res);
+        });
+    })
+    .catch((err) => {
+      errorHandler(err, req, res);
+    });
+}
+
 
 
 /////////////////////////////////////////////////////////////// error Handler /////////////////////////////////////////////////////////////////
