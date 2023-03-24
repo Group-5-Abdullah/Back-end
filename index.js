@@ -7,7 +7,7 @@ const cors = require('cors');
 const axios = require('axios');
 const jsonData = require ('./data.json');
 
-
+const jsondata = require('./readyPackages.json');
 
 const pg = require('pg');
 
@@ -69,6 +69,15 @@ server.get('/food', getFoodFromDBHandler);
 server.post('/food', postFoodFromDBHandler);
 ///////////////delete from table food////////////
 server.delete('/food',deleteFoodFromDBHandler)
+//////////////////////////////////////////////////////// Ready Packages Routs //////////////////////////////////////////////////////////////////
+/////////////////// Get From Ready Packages.json File
+server.get("/readyPackegess", getFromReadyPackagesFileHandler)
+/////////////////// Get From Data Base Ready Packages
+server.get("/readyPackeges", getFromDataBaseReadyPackagesHandler)
+/////////////////// post On Data Base Ready Packeges Handler
+server.post('/readyPackeges', postOnDataBaseReadyPackegesHandler);
+/////////////////// Delete From Data Base Ready Pacakages
+server.delete('/readyPackeges/:id', deleteOnDataBaseReadyPackagesHandler);
 
 server.use(errorHandler); // under all routs
 ///////////////////////////////////////////////////////// Music constructor /////////////////////////////////////////////////////////////////////
@@ -91,7 +100,7 @@ function Flowers(flower_title, flower_image) {
   
 }
 
-/////////////////////////////////////////////////////////flowersList constructor////////////////////////////////////////////
+/////////////////////////////////////////////////////////food constructor////////////////////////////////////////////
 function Food(food_title, food_image) {
   this.food_title = food_title;
   this.food_image = food_image;
@@ -481,7 +490,65 @@ function deleteFoodFromDBHandler(req, res) {
       errorHandler(err, req, res);
     });
 }
+/////////////////////////////////////////////////////////////// ready packages Handlers ///////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////// get From Ready Packages File Handler //////////////////////////////////////////
+function getFromReadyPackagesFileHandler(req, res) {
+  res.status(200).send(jsondata);
+}
+/////////////////////////////////////////////////////////////// post On Data Base Ready Packeges Handler //////////////////////////////////////
+function postOnDataBaseReadyPackegesHandler(req, res) {
+  const readyPackeges = req.body;
+  const name = req.body.user_email;
+  const sql = `INSERT INTO readyPackages (user_email, gift_title, gift_image, gift_price, flower_image, flower_name, track_name, track_url, aritst_name, food_title, food_image)
+  VALUES('${readyPackeges.user_email}','${readyPackeges.gift_title}' ,'${readyPackeges.gift_image}' ,'${readyPackeges.gift_price}' ,'${readyPackeges.flower_image}' ,'${readyPackeges.flower_name}' ,'${readyPackeges.track_name}' ,'${readyPackeges.track_url}' ,'${readyPackeges.aritst_name}' ,'${readyPackeges.food_title}' ,'${readyPackeges.food_image}') ;`
 
+  client.query(sql)
+      .then((data) => {
+          const sql = `SELECT * FROM readyPackages WHERE user_email='${name}';`;
+          client.query(sql)
+              .then((data) => {
+                  res.send(data.rows);
+              })
+              .catch((err) => {
+                  errorHandler(err, req, res);
+              })
+      })
+      .catch((err) => {
+          errorHandler(err, req, res);
+      })
+}
+/////////////////////////////////////////////////////////////// get From Data Base Ready Packages Handler /////////////////////////////////////
+function getFromDataBaseReadyPackagesHandler(req, res) {
+  const name = req.query.val;
+  const sql = `SELECT * FROM readyPackages WHERE user_email='${name}';`;
+  client.query(sql)
+      .then((data) => {
+          res.send(data.rows);
+      })
+      .catch((err) => {
+          errorHandler(err, req, res);
+      })
+}
+/////////////////////////////////////////////////////////////// delete On Data Base Ready Packages Handler ////////////////////////////////////
+function deleteOnDataBaseReadyPackagesHandler(req, res) {
+  const id = req.params.id;
+  const name = req.query.val;
+  let sql = `DELETE FROM readyPackages WHERE id='${id}' RETURNING *`;
+  client.query(sql)
+      .then((data) => {
+          const sql = `SELECT * FROM readyPackages WHERE user_email='${name}';`;
+          client.query(sql)
+              .then((data) => {
+                  res.send(data.rows);
+              })
+              .catch((err) => {
+                  errorHandler(err, req, res);
+              })
+      })
+      .catch((err) => {
+          errorHandler(err, req, res);
+      })
+}
 
 
 /////////////////////////////////////////////////////////////// error Handler /////////////////////////////////////////////////////////////////
