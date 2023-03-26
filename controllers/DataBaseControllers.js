@@ -1,7 +1,7 @@
 const pg = require('pg');
 const client = new pg.Client(process.env.DATABASE_URL);
 require('dotenv').config();
-
+const errorHandler = require('./errorHandler')
 
 // //////////////////////////////////////////////////  event information part /////////////////////////////////////
 
@@ -192,12 +192,13 @@ function addEvent(req,res){
      /////////post to DataBasr Handler gift////////////////////
   function postGiftHandler(req, res) {
     const body = req.body;
-    const sql = `INSERT INTO gifts (gift_title, gift_image, gift_price,user_email)
-                   VALUES ($1,$2,$3,$4) RETURNING *;`;
+    const sql = `INSERT INTO gifts (gift_title, gift_image, gift_price,gift_quantity,user_email)
+                   VALUES ($1,$2,$3,$4,$5) RETURNING *;`;
     let values = [
       body.gift_title,
       body.gift_image,
       body.gift_price,
+      body.gift_quantity,
       body.user_email,
     ];
     client

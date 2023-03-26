@@ -22,8 +22,7 @@ const dataBaseControllers= require('./controllers/DataBaseControllers')
 const dataJSONControllers = require('./controllers/dataJSONControllers')
 const apiControllers = require('./controllers/APIControllers')
 
-const errorHandler = require('./controllers/errorHandler')
-
+const errorHandler = require('./controllers/errorHandler');
 
 
 const client = new pg.Client(process.env.DATABASE_URL);
