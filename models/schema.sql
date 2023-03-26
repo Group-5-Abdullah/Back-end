@@ -1,10 +1,11 @@
-DROP TABLE IF EXISTS eventinfo;
+DROP TABLE  IF EXISTS eventinfo ;
 CREATE TABLE IF NOT EXISTS eventinfo (
-    id SERIAL  PRIMARY KEY,
+    eventid  SERIAL  PRIMARY KEY,
     event VARCHAR(255),
     location VARCHAR(255) ,
     date VARCHAR(255),
     description VARCHAR(10000),
     user_email varchar(255)
+   
    
 );

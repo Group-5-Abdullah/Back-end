@@ -37,7 +37,7 @@ server.get('/Music', dataBaseControllers.getMusicFromDataBaseHandler);
 //////////////////// Post On Data Base Music Rout
 server.post('/Music', dataBaseControllers.postOnDataBaseMusicHandler);
 //////////////////// Delete From Data Base Music Rout
-server.delete('/Music/:id', dataBaseControllers.deleteFromDataBaseMusicHandler);
+server.delete('/Music/:eventid', dataBaseControllers.deleteFromDataBaseMusicHandler);
 ////////////////////////////////////////////////////////gift routes//////////////////////////////////////////////////
 ////////////////get from API gift//////////////
 server.get("/gifts", apiControllers.giftsAPIHandler);
@@ -46,7 +46,7 @@ server.post("/gift", dataBaseControllers.postGiftHandler);
 ///////////////get from DataBase gift////////////
 server.get("/gift", dataBaseControllers.getGiftsFromDBHandler);
 ///////////////delete from DataBase gift////////////
-server.delete("/gift/:id", dataBaseControllers.deleteFromDbHandler);
+server.delete("/gift/:eventid", dataBaseControllers.deleteFromDbHandler);
 
 ////////////////////////////////////////////////////////flowers routes//////////////////////////////////////////////////
 ////////////////get from data.jason//////////////
@@ -56,13 +56,13 @@ server.post("/flowerslist", dataBaseControllers.postFlowersHandler);
 ///////////////get from DataBase flowerstable////////////
 server.get("/flower", dataBaseControllers.getFlowerDBHandler);
 ///////////////delete from DataBase gift////////////
-server.delete("/flower/:id", dataBaseControllers.deleteFlowerHandler);
+server.delete("/flower/:eventid", dataBaseControllers.deleteFlowerHandler);
 
 /////////////////////////////////////////////////////// event routes ///////////////////////////////////////////////////
 server.get('/events/:user_email',dataBaseControllers.getEvent)
 server.post('/events',dataBaseControllers.addEvent)
-server.put('/events/:id',dataBaseControllers.updateEvent)
-server.delete('/events/:id',dataBaseControllers.deleteEvent)
+server.put('/events/:eventid',dataBaseControllers.updateEvent)
+server.delete('/events/:eventid',dataBaseControllers.deleteEvent)
 ////////////////////////////////////////////////////////food routes//////////////////////////////////////////////////
 ////////////////get from food api//////////////
 server.get('/FoodAPI',apiControllers.getFoodFromAPIHandler);
@@ -80,7 +80,7 @@ server.get("/readyPackeges", dataBaseControllers.getFromDataBaseReadyPackagesHan
 /////////////////// post On Data Base Ready Packeges Handler
 server.post('/readyPackeges', dataBaseControllers.postOnDataBaseReadyPackegesHandler);
 /////////////////// Delete From Data Base Ready Pacakages
-server.delete('/readyPackeges/:id', dataBaseControllers.deleteOnDataBaseReadyPackagesHandler);
+server.delete('/readyPackeges/:eventid', dataBaseControllers.deleteOnDataBaseReadyPackagesHandler);
 
 server.use(errorHandler); // under all routs
 

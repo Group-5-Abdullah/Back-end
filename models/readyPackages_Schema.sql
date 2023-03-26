@@ -12,5 +12,6 @@ CREATE TABLE IF NOT EXISTS readyPackages (
     track_url VARCHAR(10000),
     aritst_name VARCHAR(10000),
     food_title VARCHAR(10000),
-    food_image VARCHAR(10000)
+    food_image VARCHAR(10000),
+    eventid INTEGER,CONSTRAINT fk_customer FOREIGN KEY (eventid) REFERENCES eventinfo(eventid)
 );
