@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////// error Handler /////////////////////////////////////////////////////////////////
-function errorHandler(error, req, res) {
+function errorHandler(error, req, res,next) {
     const err = {
         status: 500,
         massage: error

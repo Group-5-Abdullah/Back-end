@@ -336,7 +336,7 @@ function deleteFromDataBaseMusicHandler(req, res) {
   /////////////////////////////////////////////////////////////// get From Data Base Ready Packages Handler /////////////////////////////////////
   function getFromDataBaseReadyPackagesHandler(req, res) {
     const eventid = req.query.eventid;
-    const sql = `SELECT * FROM readyPackages WHERE user_email='${eventid}';`;
+    const sql = `SELECT * FROM readyPackages WHERE eventid='${eventid}';`;
     client.query(sql)
         .then((data) => {
             res.send(data.rows);

@@ -1,5 +1,5 @@
 require('dotenv').config();
-// const errorHandler = require('./errorHandler')
+const errorHandler = require('./errorHandler')
 const axios = require('axios');
 
 /////////////////////////////////////////////////////////food constructor////////////////////////////////////////////
