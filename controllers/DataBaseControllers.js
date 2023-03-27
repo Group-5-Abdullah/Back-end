@@ -1,3 +1,4 @@
+const { query } = require('express');
 const pg = require('pg');
 const client = new pg.Client(process.env.DATABASE_URL);
 require('dotenv').config();
@@ -106,11 +107,11 @@ function addEvent(req,res){
   
   ////// delete from DataBase flowerstable/////////////////////
   function deleteFlowerHandler(req, res) {
-  const eventid= req.params.id;
-    
-    const sql = `DELETE FROM flowers WHERE eventid=$1`;
+  const eventid= req.params.eventid;
+    const id = req.query.id;
+    const sql = `DELETE FROM flowers WHERE id=$1`;
     client
-      .query(sql, [eventid])
+      .query(sql, [id])
       .then((respones) => {
         const sql = `SELECT * FROM flowers WHERE eventid=$1`;
         client.query(sql, [eventid])
@@ -171,9 +172,10 @@ function addEvent(req,res){
     
     function deleteFoodFromDBHandler(req, res) {
       const eventid = req.query.eventid;
-      const user_email = req.query.user_email;
-      const sql = `DELETE FROM food WHERE eventid=$1 AND user_email=$2`;
-      client.query(sql, [eventid, user_email])
+      
+      const id = req.query.id;
+      const sql = `DELETE FROM food WHERE id=$1`;
+      client.query(sql, [id])
         .then(() => {
           const sql = `SELECT * FROM food WHERE eventid=$1`;
           client.query(sql, [eventid])
@@ -237,10 +239,10 @@ function addEvent(req,res){
   ////// delete from DataBase gift/////////////////////
   function deleteFromDbHandler(req, res) {
       const eventid= req.params.eventid;
-    
-    const sql = `DELETE FROM gifts WHERE eventid=$1`;
+      const id = req.query.id;
+    const sql = `DELETE FROM gifts WHERE id=$1`;
     client
-      .query(sql, [eventid])
+      .query(sql, [id])
       .then((respones) => {
         const sql = `SELECT * FROM gifts WHERE eventid=$1`;
         client.query(sql, [eventid])
@@ -294,8 +296,8 @@ function postOnDataBaseMusicHandler(req, res) {
 /////////////////////////////////////////////////////////////// delete From Data Base Music Handler ///////////////////////////////////////////
 function deleteFromDataBaseMusicHandler(req, res) {
     const eventid = req.params.eventid;
-    
-    let sql = `DELETE FROM music WHERE eventid='${eventid}' RETURNING *`;
+    const id = req.query.id;
+    let sql = `DELETE FROM music WHERE id='${id}' RETURNING *`;
     client.query(sql)
     .then((data) => {
         const sql = `SELECT * FROM music WHERE eventid='${eventid}';`;
@@ -348,8 +350,8 @@ function deleteFromDataBaseMusicHandler(req, res) {
   /////////////////////////////////////////////////////////////// delete On Data Base Ready Packages Handler ////////////////////////////////////
   function deleteOnDataBaseReadyPackagesHandler(req, res) {
     const eventid = req.params.eventid;
-    
-    let sql = `DELETE FROM readyPackages WHERE eventid='${eventid}' RETURNING *`;
+    const id = req.query.id;
+    let sql = `DELETE FROM readyPackages WHERE id='${id}' RETURNING *`;
     client.query(sql)
         .then((data) => {
             const sql = `SELECT * FROM readyPackages WHERE eventid='${eventid}';`;
