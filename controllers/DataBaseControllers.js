@@ -44,10 +44,15 @@ function addEvent(req,res){
   
   function deleteEvent(req,res){
     const id=req.params.eventid ;
+    let user_email= req.query.user_email
     const sql = `DELETE FROM eventinfo WHERE eventid=${id}`;
     client.query(sql)
     .then((data)=>{
-        res.status(204).json({});
+      const sql = `SELECT * FROM eventinfo WHERE user_email='${user_email}'`;
+      client.query(sql)
+      .then((data)=>{
+          res.send(data.rows);
+      })
     })
     .catch((err)=>{
         errorHandler(err,req,res);
